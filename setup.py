@@ -1,5 +1,8 @@
 from setuptools import setup
 
+entry_points = {
+    'console_scripts': ['msl = msl.console:main']
+}
 
 setup(
     name='msl',
@@ -9,5 +12,6 @@ setup(
     author_email='tatsuya.matoa.wk.jp@gmail.com',
     packages = ['msl'],
     include_package_data=True,
+    entry_points=entry_points,
     install_requires=[],
 )
