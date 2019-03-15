@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -11,7 +12,8 @@ def main():
 
     if len(args) > 1 and sys.argv[1] == 'create':
         logging.debug('call create command')
-        os.system("vim test")
+        temporary_note = str(uuid.uuid1())
+        os.system("vim {}".format(temporary_note))
 
 if __name__=='__main__':
     main()
