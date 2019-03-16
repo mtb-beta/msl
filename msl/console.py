@@ -84,10 +84,10 @@ def edit_command(note_name):
     logging.debug(f'note_name:{note_name}')
 
     # open note
-    open_note(temporary_note_name)
+    open_note(note_name)
 
     # save meta data
-    save_meta_data(temporary_note_name)
+    save_meta_data(note_name)
 
 
 def main():
