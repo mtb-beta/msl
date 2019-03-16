@@ -43,12 +43,14 @@ def save_meta_data(note_name):
     with json_note_path.open(mode='w') as json_file:
         json.dump(data, json_file)
 
+def create_note_name():
+    return str(uuid.uuid1())
 
 def create_command():
     """
     This command craete note.
     """
-    temporary_note_name = str(uuid.uuid1())
+    temporary_note_name = create_note_name()
     BASE_DIR.mkdir(exist_ok=True)
     # open note
     open_note(temporary_note_name)
@@ -90,24 +92,40 @@ def edit_command(note_name):
     save_meta_data(note_name)
 
 
+def import_command(path):
+    logging.info(f'import file is {path}')
+    
+    # load content
+    content = Path(path).read_text()
+
+    # create new file
+    new_note_name = create_note_name()
+    new_note_path = NOTE_DIR / new_note_name
+    new_note_path.write_text(content)
+    save_meta_data(new_note_name)
+
 def main():
     print(f'{Style.RESET_ALL}', end="")
     logging.debug('call main')
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('first')
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument('first')
+    #args = parser.parse_args()
 
     args = sys.argv
     logging.debug('sys.args:%s'% args)
 
-    if len(args) > 1 and sys.argv[1] == 'create':
+    if len(args) > 1 and args[1] == 'create':
         logging.debug('call create command')
         create_command()
 
-    elif len(args) > 1 and sys.argv[1] == 'list':
+    elif len(args) > 1 and args[1] == 'list':
         logging.debug('call list command')
         list_command()
+
+    elif len(args) > 2 and args[1] == 'import':
+        logging.debug('call import command')
+        import_command(args[2])
 
     elif len(args) == 2:
         logging.debug('call edit command')
