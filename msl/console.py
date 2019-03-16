@@ -4,6 +4,7 @@ import sys
 import uuid
 import logging
 import json
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -94,7 +95,7 @@ def edit_command(note_name):
 
 def import_command(path):
     logging.info(f'import file is {path}')
-    
+
     # load content
     content = Path(path).read_text()
 
@@ -103,6 +104,19 @@ def import_command(path):
     new_note_path = NOTE_DIR / new_note_name
     new_note_path.write_text(content)
     save_meta_data(new_note_name)
+
+def grep_command(keyword):
+    all_notes = NOTE_DIR.glob('*')
+
+    # check all note loop
+    for note in all_notes:
+        with note.open() as f:
+            # check all line loop
+            for line in f:
+                if keyword in line:
+                    print_line = line.replace('\n', '')
+                    print(f'{note.name}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
+
 
 def main():
     print(f'{Style.RESET_ALL}', end="")
@@ -126,6 +140,10 @@ def main():
     elif len(args) > 2 and args[1] == 'import':
         logging.debug('call import command')
         import_command(args[2])
+
+    elif len(args) > 2 and args[1] == 'grep':
+        logging.debug('call grep command')
+        grep_command(args[2])
 
     elif len(args) == 2:
         logging.debug('call edit command')
