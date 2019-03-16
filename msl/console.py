@@ -8,7 +8,9 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.DEBUG)
 
-DATA_DIR = Path.home() / '.msl/'
+BASE_DIR = Path.home() / '.msl/'
+META_DIR = BASE_DIR / 'meta'
+NOTE_DIR = BASE_DIR / 'notes'
 
 def main():
     logging.debug('call main')
@@ -19,8 +21,8 @@ def main():
         logging.debug('call create command')
 
         temporary_note = str(uuid.uuid1())
-        temporary_note_path = DATA_DIR / temporary_note
-        DATA_DIR.mkdir(exist_ok=True)
+        temporary_note_path = BASE_DIR / temporary_note
+        BASE_DIR.mkdir(exist_ok=True)
         logging.debug(temporary_note_path)
         # open note
         os.system("vim {}".format(temporary_note_path))
@@ -28,16 +30,23 @@ def main():
         # save note
         if temporary_note_path.exists():
             logging.debug('save note')
+            # save meta data
             data = {}
-            with temporary_note_path.open() as note_file:
-                data['content'] = note_file.readline()
-
             data['created_at'] = datetime.now().isoformat(timespec='seconds')
-            json_note_path = DATA_DIR / str(temporary_note + '.json')
+            META_DIR.mkdir(exist_ok=True)
+            json_note_path = META_DIR / str(temporary_note + '.json')
             with json_note_path.open(mode='w') as json_file:
                 json.dump(data, json_file)
 
-            os.remove(temporary_note_path)
+            # move temporary_note
+            NOTE_DIR.mkdir(exist_ok=True)
+            temporary_note_path.rename(NOTE_DIR/temporary_note_path.name)
+
+    if len(args) > 1 and sys.argv[1] == 'list':
+        logging.debug('call list command')
+        notes = list(NOTE_DIR.glob('*'))
+        for note in notes:
+            print(note.name)
 
 if __name__=='__main__':
     main()
