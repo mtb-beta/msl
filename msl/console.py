@@ -64,6 +64,8 @@ def list_command():
     for note in notes:
         name = note.name
         meta_path = META_DIR / str(name + '.json')
+        if not meta_path.exists():
+            save_meta_data(note.name)
         with meta_path.open() as f:
             meta = json.load(f)
         title = meta['title']
