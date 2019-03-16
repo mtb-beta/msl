@@ -30,6 +30,11 @@ def save_meta_data(note_name):
     data = {}
     data['created_at'] = datetime.now().isoformat(timespec='seconds')
     note_path = NOTE_DIR / note_name
+
+    if not note_path.exists():
+        logging.warning('There is not note_path.')
+        return
+
     with note_path.open() as f:
         data['title'] = f.readline().replace('\n', '')
 
@@ -48,12 +53,8 @@ def create_command():
     # open note
     open_note(temporary_note_name)
 
-    # save note
-    temporary_note_path = NOTE_DIR / temporary_note_name
-    if temporary_note_path.exists():
-        logging.debug('save note')
-        # save meta data
-        save_meta_data(temporary_note_name)
+    # save meta data
+    save_meta_data(temporary_note_name)
 
 def list_command():
     """
@@ -80,8 +81,11 @@ def edit_command(note_name):
     note_name = notes[0].name
     logging.debug(f'note_name:{note_name}')
 
-    open_note(note_name)
-    save_meta_data(note_name)
+    # open note
+    open_note(temporary_note_name)
+
+    # save meta data
+    save_meta_data(temporary_note_name)
 
 
 def main():
