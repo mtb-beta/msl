@@ -78,7 +78,11 @@ def edit_command(note_name):
     """
     This will open editor at note_name.
     """
-    notes = list(NOTE_DIR.glob(note_name))
+    if len(note_name) == 36:
+        notes = list(NOTE_DIR.glob(note_name))
+    else:
+        notes = list(NOTE_DIR.glob(note_name+"*"))
+
     logging.debug(f'notes:{notes}')
     if not notes:
         print(f'{Fore.RED}{note_name} is not found.{Style.RESET_ALL}')
@@ -86,6 +90,7 @@ def edit_command(note_name):
 
     logging.debug(f'note_name:{note_name}')
 
+    note_name = notes[0].name
     # open note
     open_note(note_name)
 
