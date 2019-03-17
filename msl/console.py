@@ -81,9 +81,9 @@ def edit_command(note_name):
     notes = list(NOTE_DIR.glob(note_name))
     logging.debug(f'notes:{notes}')
     if not notes:
-        print(f'{Fore.RED}{args[1]} is not found.{Style.RESET_ALL}')
+        print(f'{Fore.RED}{note_name} is not found.{Style.RESET_ALL}')
+        return
 
-    note_name = notes[0].name
     logging.debug(f'note_name:{note_name}')
 
     # open note
