@@ -129,7 +129,7 @@ def main():
     args = sys.argv
     logging.debug('sys.args:%s'% args)
 
-    if len(args) > 1 and args[1] == 'create':
+    if len(args) == 1 or args[1] == 'create':
         logging.debug('call create command')
         create_command()
 
