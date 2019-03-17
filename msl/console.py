@@ -120,7 +120,7 @@ def grep_command(keyword):
             for line in f:
                 if keyword in line:
                     print_line = line.replace('\n', '')
-                    print(f'{note.name}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
+                    print(f'{note.name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
 
 
 def main():
