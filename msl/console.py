@@ -72,7 +72,7 @@ def list_command():
         with meta_path.open() as f:
             meta = json.load(f)
         title = meta['title']
-        print(f'{note.name}{Fore.GREEN}:{Style.RESET_ALL}{title}')
+        print(f'{note.name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{title}')
 
 def edit_command(note_name):
     """
