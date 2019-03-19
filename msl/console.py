@@ -10,11 +10,14 @@ from datetime import datetime
 
 from colorama import Fore, Style
 
+from msl import settings
+
+
 #logging.basicConfig(level=logging.DEBUG)
 
-BASE_DIR = Path.home() / '.msl/'
-META_DIR = BASE_DIR / 'meta'
-NOTE_DIR = BASE_DIR / 'notes'
+BASE_DIR = settings.BASE_DIR
+META_DIR = settings.META_DIR
+NOTE_DIR = settings.NOTE_DIR
 
 def open_note(note_name):
     """
