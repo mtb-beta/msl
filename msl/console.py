@@ -47,6 +47,9 @@ def save_meta_data(note_name):
     with json_note_path.open(mode='w') as json_file:
         json.dump(data, json_file)
 
+    settings.repo.index.add(['*'])
+    settings.repo.index.commit("save:{}".format(note_name))
+
 def create_note_name():
     return str(uuid.uuid1())
 
