@@ -132,6 +132,18 @@ def grep_command(keyword):
                     print_line = line.replace('\n', '')
                     print(f'{note.name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
 
+def delete_command(note_name):
+    if len(note_name) == 36:
+        notes = list(NOTE_DIR.glob(note_name))
+    else:
+        notes = list(NOTE_DIR.glob(note_name+"*"))
+
+    if len(notes) != 1:
+        print(f'{note_name} can not find.')
+        return
+
+    os.remove(notes[0])
+    print(f'{note_name} deleted.')
 
 def main():
     print(f'{Style.RESET_ALL}', end="")
@@ -159,6 +171,10 @@ def main():
     elif len(args) > 2 and args[1] == 'grep':
         logging.debug('call grep command')
         grep_command(args[2])
+
+    elif len(args) > 2 and args[1] == 'delete':
+        logging.debug('call delete command')
+        delete_command(args[2])
 
     elif len(args) == 2:
         logging.debug('call edit command')
