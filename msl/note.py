@@ -20,7 +20,6 @@ def open_note(note_name):
     This will open editor by note_name.
     """
     logging.debug(f"open_note:{note_name}")
-    NOTE_DIR.mkdir(exist_ok=True)
     note_path = NOTE_DIR / note_name
     os.system("vim {}".format(note_path))
 
@@ -39,7 +38,6 @@ def save_meta_data(note_name):
     with note_path.open() as f:
         data['title'] = f.readline().replace('\n', '')
 
-    META_DIR.mkdir(exist_ok=True)
     json_note_path = META_DIR / str(note_name + '.json')
     with json_note_path.open(mode='w') as json_file:
         json.dump(data, json_file)

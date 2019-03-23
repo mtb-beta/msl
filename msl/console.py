@@ -28,7 +28,7 @@ def main():
 
     if len(args) > 1 and args[1] == 'group':
         logging.debug('call group command')
-        group.group_command(args[1:])
+        group.group_console(args[1:])
 
     if len(args) == 1 or args[1] == 'create':
         logging.debug('call create command')
