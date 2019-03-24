@@ -20,19 +20,44 @@ class Note:
         self.note_id = str(uuid.uuid1())
 
     def open(self):
-        open_note(self.note_id)
+        note_name = self.note_id
+        logging.debug(f"open_note:{note_name}")
+        note_path = NOTE_DIR / note_name
+        os.system("vim {}".format(note_path))
 
     def save(self):
         save_meta_data(self.note_id)
 
+    @classmethod
+    def load(clz, note_path):
+        note = Note()
+        note.note_id = note_path.name
+        return note
 
-def open_note(note_name):
-    """
-    This will open editor by note_name.
-    """
-    logging.debug(f"open_note:{note_name}")
-    note_path = NOTE_DIR / note_name
-    os.system("vim {}".format(note_path))
+class NoteManager:
+    def get(self, note_name):
+        if len(note_name) == 36:
+            notes = list(NOTE_DIR.glob(note_name))
+        else:
+            notes = list(NOTE_DIR.glob(note_name+"*"))
+
+        logging.debug(f'notes:{notes}')
+        if not notes:
+            print(f'{Fore.RED}{note_name} is not found.{Style.RESET_ALL}')
+            return
+
+        if len(notes) != 1:
+            print(f'{Fore.RED}There are many [{note_name}] note.{Style.RESET_ALL}')
+            for note in notes:
+                print(f'  - {note.name}')
+            return
+
+        logging.debug(f'note_name:{note_name}')
+
+        return Note.load(notes[0])
+
+note_manager = NoteManager()
+
 
 def save_meta_data(note_name):
     """
@@ -73,28 +98,6 @@ def create_note_name():
     return str(uuid.uuid1())
 
 
-def get_note(note_name):
-    if len(note_name) == 36:
-        notes = list(NOTE_DIR.glob(note_name))
-    else:
-        notes = list(NOTE_DIR.glob(note_name+"*"))
-
-    logging.debug(f'notes:{notes}')
-    if not notes:
-        print(f'{Fore.RED}{note_name} is not found.{Style.RESET_ALL}')
-        return
-
-    if len(notes) != 1:
-        print(f'{Fore.RED}There are many [{note_name}] note.{Style.RESET_ALL}')
-        for note in notes:
-            print(f'  - {note.name}')
-        return
-
-    logging.debug(f'note_name:{note_name}')
-
-    return notes[0].name
-
-
 def create_command():
     """
     This command craete note.
@@ -116,16 +119,12 @@ def edit_command(note_name):
     """
     This will open editor at note_name.
     """
-
-    note_name = get_note(note_name)
-    if not note_name:
+    note = note_manager.get(note_name)
+    if not note:
         return
 
-    # open note
-    open_note(note_name)
-
-    # save meta data
-    save_meta_data(note_name)
+    note.open()
+    note.save()
 
 
 def import_command(path):
