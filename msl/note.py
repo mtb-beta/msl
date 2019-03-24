@@ -56,6 +56,18 @@ class NoteManager:
 
         return Note.load(notes[0])
 
+    def delete(self, note_name):
+        if len(note_name) == 36:
+            notes = list(NOTE_DIR.glob(note_name))
+        else:
+            notes = list(NOTE_DIR.glob(note_name+"*"))
+
+        if len(notes) != 1:
+            print(f'{note_name} can not find.')
+            return
+
+        os.remove(notes[0])
+
 note_manager = NoteManager()
 
 
@@ -159,14 +171,5 @@ def grep_command(keyword):
                     print(f'{note.name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
 
 def delete_command(note_name):
-    if len(note_name) == 36:
-        notes = list(NOTE_DIR.glob(note_name))
-    else:
-        notes = list(NOTE_DIR.glob(note_name+"*"))
-
-    if len(notes) != 1:
-        print(f'{note_name} can not find.')
-        return
-
-    os.remove(notes[0])
+    note_manager.delete(note_name)
     print(f'{note_name} deleted.')
