@@ -68,6 +68,19 @@ class NoteManager:
 
         os.remove(notes[0])
 
+    def all(self):
+        notes = list(NOTE_DIR.glob('*'))
+        for note in notes:
+            name = note.name
+            meta_path = META_DIR / str(name + '.json')
+            if not meta_path.exists():
+                save_meta_data(note.name)
+            with meta_path.open() as f:
+                meta = json.load(f)
+            title = meta['title']
+            yield note.name, title
+
+
 note_manager = NoteManager()
 
 
@@ -93,18 +106,6 @@ def save_meta_data(note_name):
     settings.repo.index.add(['*'])
     settings.repo.index.commit("save:{}".format(note_name))
 
-def list_note():
-    notes = list(NOTE_DIR.glob('*'))
-    for note in notes:
-        name = note.name
-        meta_path = META_DIR / str(name + '.json')
-        if not meta_path.exists():
-            save_meta_data(note.name)
-        with meta_path.open() as f:
-            meta = json.load(f)
-        title = meta['title']
-        yield note.name, title
-
 
 def create_note_name():
     return str(uuid.uuid1())
@@ -123,7 +124,7 @@ def list_command():
     """
     This command list notes.
     """
-    for note_name, title in list_note():
+    for note_name, title in note_manager.all():
         print(f'{note_name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{title}')
 
 
