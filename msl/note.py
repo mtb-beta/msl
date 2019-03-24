@@ -15,6 +15,17 @@ META_DIR = settings.META_DIR
 NOTE_DIR = settings.NOTE_DIR
 
 
+class Note:
+    def __init__(self):
+        self.note_id = str(uuid.uuid1())
+
+    def open(self):
+        open_note(self.note_id)
+
+    def save(self):
+        save_meta_data(self.note_id)
+
+
 def open_note(note_name):
     """
     This will open editor by note_name.
@@ -88,13 +99,9 @@ def create_command():
     """
     This command craete note.
     """
-    temporary_note_name = create_note_name()
-    BASE_DIR.mkdir(exist_ok=True)
-    # open note
-    open_note(temporary_note_name)
-
-    # save meta data
-    save_meta_data(temporary_note_name)
+    temporary_note = Note()
+    temporary_note.open()
+    temporary_note.save()
 
 
 def list_command():
