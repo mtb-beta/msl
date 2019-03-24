@@ -140,23 +140,23 @@ def edit_command(note_name):
     note.save()
 
 
-def import_command(path):
-    logging.info(f'import file is {path}')
+def import_command(path_str):
+    logging.info(f'import file is {path_str}')
 
-    target_path = Path(path)
+    target_path = Path(path_str)
     if target_path.is_dir():
-        notes = list(target_path.glob('*'))
+        notes_path = list(target_path.glob('*'))
     else:
-        notes = [target_path]
+        notes_path = [target_path]
 
-    for note in notes:
+    for note_path in notes_path:
     # load content
-        content = note.read_text()
+        content = note_path.read_text()
 
         # create new file
         new_note_name = create_note_name()
         new_note_path = NOTE_DIR / new_note_name
-        new_note_path.write_text(note.name + '\n' + content)
+        new_note_path.write_text(note_path.name + '\n' + content)
         save_meta_data(new_note_name)
 
 def grep_command(keyword):
