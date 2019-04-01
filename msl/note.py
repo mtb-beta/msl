@@ -29,6 +29,10 @@ class Note:
     def build_path(self):
         return BUILD_DIR / (self.note_id + ".html")
 
+    @property
+    def meta_path(self):
+        return META_DIR / str(self.note_id + '.json')
+
     def open(self):
         logging.debug(f"open_note:{self.note_id}")
         os.system("vim {}".format(self.path))
@@ -50,6 +54,13 @@ class Note:
         html = markdown.markdown(self.content)
         self.build_path.write_text(html)
 
+    @property
+    def title(self):
+        if not self.meta_path.exists():
+            save_meta_data(self.note_id)
+        with self.meta_path.open() as f:
+            meta = json.load(f)
+        return meta['title']
 
 class NoteManager:
     def find(self, note_name):
@@ -91,14 +102,7 @@ class NoteManager:
     def all(self):
         notes = list(NOTE_DIR.glob('*'))
         for note in notes:
-            name = note.name
-            meta_path = META_DIR / str(name + '.json')
-            if not meta_path.exists():
-                save_meta_data(note.name)
-            with meta_path.open() as f:
-                meta = json.load(f)
-            title = meta['title']
-            yield note.name, title
+            yield self.get(note.name)
 
     def build(self, note_name):
         note = self.get(note_name)
@@ -149,8 +153,8 @@ def list_command():
     """
     This command list notes.
     """
-    for note_name, title in note_manager.all():
-        print(f'{note_name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{title}')
+    for note in note_manager.all():
+        print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
 
 
 def edit_command(note_name):
