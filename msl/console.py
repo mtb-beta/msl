@@ -27,31 +27,27 @@ def main():
     logging.debug('sys.args:%s'% args)
 
     if len(args) > 1 and args[1] == 'group':
-        logging.debug('call group command')
         group.group_console(args[1:])
 
     if len(args) == 1 or args[1] == 'create':
-        logging.debug('call create command')
         note.create_command()
 
     elif len(args) > 1 and args[1] == 'list':
-        logging.debug('call list command')
         note.list_command()
 
     elif len(args) > 2 and args[1] == 'import':
-        logging.debug('call import command')
         note.import_command(args[2])
 
     elif len(args) > 2 and args[1] == 'grep':
-        logging.debug('call grep command')
         note.grep_command(args[2])
 
     elif len(args) > 2 and args[1] == 'delete':
-        logging.debug('call delete command')
         note.delete_command(args[2])
 
+    elif len(args) > 2 and args[1] == 'build':
+        note.build_command(args[2])
+
     elif len(args) == 2:
-        logging.debug('call edit command')
         note_name = args[1]
         note.edit_command(note_name)
 

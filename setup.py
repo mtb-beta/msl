@@ -13,5 +13,5 @@ setup(
     packages = ['msl'],
     include_package_data=True,
     entry_points=entry_points,
-    install_requires=['colorama', 'GitPython'],
+    install_requires=['colorama', 'GitPython', 'markdown'],
 )

@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 
 from colorama import Fore, Style
+import markdown
 
 from msl import settings
 
@@ -13,17 +14,24 @@ from msl import settings
 BASE_DIR = settings.BASE_DIR
 META_DIR = settings.META_DIR
 NOTE_DIR = settings.NOTE_DIR
+BUILD_DIR = settings.BUILD_DIR
 
 
 class Note:
     def __init__(self):
         self.note_id = str(uuid.uuid1())
 
+    @property
+    def path(self):
+        return NOTE_DIR / self.note_id
+
+    @property
+    def build_path(self):
+        return BUILD_DIR / (self.note_id + ".html")
+
     def open(self):
-        note_name = self.note_id
-        logging.debug(f"open_note:{note_name}")
-        note_path = NOTE_DIR / note_name
-        os.system("vim {}".format(note_path))
+        logging.debug(f"open_note:{self.note_id}")
+        os.system("vim {}".format(self.path))
 
     def save(self):
         save_meta_data(self.note_id)
@@ -34,14 +42,23 @@ class Note:
         note.note_id = note_path.name
         return note
 
+    @property
+    def content(self):
+        return self.path.read_text()
+
+    def build(self):
+        html = markdown.markdown(self.content)
+        self.build_path.write_text(html)
+
 
 class NoteManager:
     def find(self, note_name):
         if len(note_name) == 36:
-            notes = list(NOTE_DIR.glob(note_name))
+            notes_path = list(NOTE_DIR.glob(note_name))
         else:
-            notes = list(NOTE_DIR.glob(note_name+"*"))
+            notes_path = list(NOTE_DIR.glob(note_name+"*"))
         
+        notes = [Note.load(note_path) for note_path in notes_path]
         return notes
 
     def get(self, note_name):
@@ -60,7 +77,7 @@ class NoteManager:
 
         logging.debug(f'note_name:{note_name}')
 
-        return Note.load(notes[0])
+        return notes[0]
 
     def delete(self, note_name):
         notes = self.find(note_name)
@@ -69,7 +86,7 @@ class NoteManager:
             print(f'{note_name} can not find.')
             return
 
-        os.remove(notes[0])
+        os.remove(notes[0].path)
 
     def all(self):
         notes = list(NOTE_DIR.glob('*'))
@@ -82,6 +99,11 @@ class NoteManager:
                 meta = json.load(f)
             title = meta['title']
             yield note.name, title
+
+    def build(self, note_name):
+        note = self.get(note_name)
+        note.build()
+        return note
 
 
 note_manager = NoteManager()
@@ -162,6 +184,7 @@ def import_command(path_str):
         new_note_path.write_text(note_path.name + '\n' + content)
         save_meta_data(new_note_name)
 
+
 def grep_command(keyword):
     all_notes = NOTE_DIR.glob('*')
 
@@ -174,6 +197,15 @@ def grep_command(keyword):
                     print_line = line.replace('\n', '')
                     print(f'{note.name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{print_line}')
 
+
 def delete_command(note_name):
     note_manager.delete(note_name)
     print(f'{note_name} deleted.')
+
+
+def build_command(note_name):
+    """
+    This command build note to html.
+    """
+    note = note_manager.build(note_name)
+    print(f'{note.build_path} build.')

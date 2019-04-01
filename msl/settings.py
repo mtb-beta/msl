@@ -24,8 +24,10 @@ repo = git.Repo.init(BASE_DIR)
 META_DIR = BASE_DIR / 'meta'
 NOTE_DIR = BASE_DIR / 'notes'
 GROUP_DIR = BASE_DIR / 'groups'
+BUILD_DIR = BASE_DIR / 'build'
 
 
 META_DIR.mkdir(exist_ok=True)
 NOTE_DIR.mkdir(exist_ok=True)
 GROUP_DIR.mkdir(exist_ok=True)
+BUILD_DIR.mkdir(exist_ok=True)
