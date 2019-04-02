@@ -179,7 +179,9 @@ def import_command(path_str):
         notes_path = [target_path]
 
     for note_path in notes_path:
-    # load content
+        # load content
+        if note_path.name == ".DS_Store":
+            continue
         content = note_path.read_text()
 
         # create new file
@@ -187,6 +189,7 @@ def import_command(path_str):
         new_note_path = NOTE_DIR / new_note_name
         new_note_path.write_text(note_path.name + '\n' + content)
         save_meta_data(new_note_name)
+        print(f'create note title {new_note_name}')
 
 
 def grep_command(keyword):
