@@ -109,6 +109,12 @@ class NoteManager:
         note.build()
         return note
 
+    def search(self, keyword):
+        result = []
+        for note in self.all():
+            if keyword in note.content:
+                result.append(note)
+        return result
 
 note_manager = NoteManager()
 
@@ -221,3 +227,8 @@ def build_command(note_name):
     else:
         note = note_manager.build(note_name)
         print(f'{note.build_path} build.')
+
+
+def search_command(keyword):
+    for note in note_manager.search(keyword) :
+        print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
