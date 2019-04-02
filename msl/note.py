@@ -211,5 +211,10 @@ def build_command(note_name):
     """
     This command build note to html.
     """
-    note = note_manager.build(note_name)
-    print(f'{note.build_path} build.')
+    if note_name == "all":
+        for note in note_manager.all():
+            note_manager.build(note.note_id)
+            print(f'{note.build_path} build.')
+    else:
+        note = note_manager.build(note_name)
+        print(f'{note.build_path} build.')
