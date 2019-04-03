@@ -193,7 +193,9 @@ def import_command(path_str):
         # create new file
         new_note_name = create_note_name()
         new_note_path = NOTE_DIR / new_note_name
-        new_note_path.write_text(note_path.name + '\n' + content)
+        # exclude extension from title
+        title = note_path.name.split('.')[0]
+        new_note_path.write_text(title + '\n' + content)
         save_meta_data(new_note_name)
         print(f'create note title {new_note_name}')
 
