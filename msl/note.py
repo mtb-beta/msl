@@ -134,6 +134,8 @@ def save_meta_data(note_name):
     with note_path.open() as f:
         data['title'] = f.readline().replace('\n', '')
 
+    data['hostname'] = settings.HOSTNAME
+
     json_note_path = META_DIR / str(note_name + '.json')
     with json_note_path.open(mode='w') as json_file:
         json.dump(data, json_file)

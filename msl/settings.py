@@ -16,6 +16,13 @@ if 'data' in config and 'path' in config['data']:
 else:
     BASE_DIR = Path.home() / '.msl'
 
+if 'data' in config and 'hostname' in config['data']:
+    HOSTNAME = config['data']['hostname']
+else:
+    HOSTNAME = 'default'
+
+
+
 BASE_DIR.mkdir(exist_ok=True)
 
 
