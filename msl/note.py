@@ -62,6 +62,9 @@ class Note:
             meta = json.load(f)
         return meta['title']
 
+    def cat(self):
+        os.system("cat {}".format(self.path))
+
 class NoteManager:
     def find(self, note_name):
         if len(note_name) == 36:
@@ -237,6 +240,17 @@ def build_command(note_name):
     else:
         note = note_manager.build(note_name)
         print(f'{note.build_path} build.')
+
+
+def cat_command(note_name):
+    """
+    This command call cat command at note.
+    """
+    note = note_manager.get(note_name)
+    if not note:
+        return
+
+    note.cat()
 
 
 def search_command(keyword):

@@ -54,6 +54,9 @@ def main():
     elif len(args) > 2 and args[1] == 'build':
         note.build_command(args[2])
 
+    elif len(args) > 2 and args[1] == 'cat':
+        note.cat_command(args[2])
+
     elif len(args) == 2:
         note_name = args[1]
         note.edit_command(note_name)
