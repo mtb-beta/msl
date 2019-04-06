@@ -33,7 +33,11 @@ def main():
         note.create_command()
 
     elif len(args) > 1 and args[1] == 'list' or args[1] == 'l':
-        note.list_command()
+        option = {}
+        if len(args) > 2 and args[2] == "--strict":
+            option['strict'] = True
+
+        note.list_command(option)
 
     elif len(args) > 2 and args[1] == 'import':
         note.import_command(args[2])

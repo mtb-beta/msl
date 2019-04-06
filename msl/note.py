@@ -160,12 +160,15 @@ def create_command():
     temporary_note.save()
 
 
-def list_command():
+def list_command(option):
     """
     This command list notes.
     """
     for note in note_manager.all():
-        print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+        if 'strict' in option and option['strict']:
+            print(f'{note.note_id}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+        else:
+            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
 
 
 def edit_command(note_name):
