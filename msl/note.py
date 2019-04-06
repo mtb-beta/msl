@@ -51,7 +51,7 @@ class Note:
         return self.path.read_text()
 
     def build(self):
-        html = markdown.markdown(self.content)
+        html = markdown.markdown("#" + self.content)
         self.build_path.write_text(html)
 
     @property
