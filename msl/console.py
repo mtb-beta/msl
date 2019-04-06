@@ -26,13 +26,13 @@ def main():
     args = sys.argv
     logging.debug('sys.args:%s'% args)
 
-    if len(args) > 1 and args[1] == 'group':
+    if len(args) > 1 and (args[1] == 'group' or args[1] == 'gp'):
         group.group_console(args[1:])
 
     if len(args) == 1 or args[1] == 'create':
         note.create_command()
 
-    elif len(args) > 1 and args[1] == 'list':
+    elif len(args) > 1 and args[1] == 'list' or args[1] == 'l':
         note.list_command()
 
     elif len(args) > 2 and args[1] == 'import':

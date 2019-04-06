@@ -98,6 +98,9 @@ class NoteManager:
             return
 
         os.remove(notes[0].path)
+        settings.repo.index.remove(['*'])
+        settings.repo.index.add(['*'])
+        settings.repo.index.commit("delete:{}".format(note_name))
 
     def all(self):
         notes = list(NOTE_DIR.glob('*'))
