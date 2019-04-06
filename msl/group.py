@@ -6,6 +6,7 @@ from datetime import datetime
 from colorama import Fore, Style
 
 from msl import settings
+from msl.note import note_manager
 
 
 class Group:
@@ -29,8 +30,14 @@ class Group:
             group.data = json.load(f)
         return group
 
-    def add(self, note):
-        self.data['notes'].append(note)
+    def add(self, note_id):
+        note = note_manager.get(note_id)
+        if note:
+            self.data['notes'].append(note.note_id)
+
+    @property
+    def notes(self):
+        return self.data['notes']
 
 
 class GroupManager:
@@ -90,11 +97,22 @@ def list_command():
         print(f'{group_name[:8]}{Fore.GREEN}:{Style.RESET_ALL}{title}')
 
 
-def add_command(group, note):
+def member_command(group_id):
+    """
+    This command list group member note.
+    """
+    group = group_manager.get(group_id)
+    for note_id in group.notes:
+        note = note_manager.get(note_id)
+        if note:
+            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+
+
+def add_command(group_id, note_id):
     """
     This command add the note at the group.
     """
-    group_manager.add(group, note)
+    group_manager.add(group_id, note_id)
 
 
 def group_console(args):
@@ -102,8 +120,10 @@ def group_console(args):
         create_command(args[2])
     elif len(args) > 1 and (args[1] == "list" or args[1] == 'l'):
         list_command()
+    elif len(args) > 2 and (args[1] == "member" or args[1] == 'l'):
+        member_command(group_id=args[2])
     elif len(args) > 2:
-        add_command(args[1], args[2])
+        add_command(group_id=args[1], note_id=args[2])
     else:
         print('command not found')
 
