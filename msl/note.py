@@ -58,7 +58,6 @@ class Note:
 
     def build(self):
         template = Template(settings.BUILD_TEMPLATE)
-        #template = Template('<html><header></header><body>{{ content }}</body></html>')
         html_content = template.render(content=self.html)
         self.build_path.write_text(html_content)
 
@@ -79,7 +78,7 @@ class NoteManager:
             notes_path = list(NOTE_DIR.glob(note_name))
         else:
             notes_path = list(NOTE_DIR.glob(note_name+"*"))
-        
+
         notes = [Note.load(note_path) for note_path in notes_path]
         return notes
 
@@ -122,6 +121,24 @@ class NoteManager:
         note = self.get(note_name)
         note.build()
         return note
+
+    @property
+    def build_path(self):
+        return BUILD_DIR / "index.html"
+
+    @property
+    def html(self):
+        contents_list = []
+        for note in self.all():
+            contents_list.append(f'- [{note.title}]({note.build_path})')
+
+        markdown_content = "\n".join(contents_list)
+        return markdown.markdown(markdown_content)
+
+    def build_index(self):
+        template = Template(settings.BUILD_TEMPLATE)
+        html_content = template.render(content=self.html)
+        self.build_path.write_text(html_content)
 
     def search(self, keyword):
         result = []
@@ -245,6 +262,8 @@ def build_command(note_name):
         for note in note_manager.all():
             note_manager.build(note.note_id)
             print(f'{note.build_path} build.')
+        note_manager.build_index()
+        print(f'{note_manager.build_path} build.')
     else:
         note = note_manager.build(note_name)
         print(f'{note.build_path} build.')
