@@ -22,9 +22,7 @@ else:
     HOSTNAME = 'default'
 
 
-
 BASE_DIR.mkdir(exist_ok=True)
-
 
 repo = git.Repo.init(BASE_DIR)
 
@@ -38,3 +36,7 @@ META_DIR.mkdir(exist_ok=True)
 NOTE_DIR.mkdir(exist_ok=True)
 GROUP_DIR.mkdir(exist_ok=True)
 BUILD_DIR.mkdir(exist_ok=True)
+
+BUILD_TEMPLATE_PATH = Path('./msl/') / 'build_template.html'
+BUILD_TEMPLATE = BUILD_TEMPLATE_PATH.read_text()
+

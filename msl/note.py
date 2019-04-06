@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 
 from colorama import Fore, Style
+from jinja2 import Template
 import markdown
 
 from msl import settings
@@ -50,9 +51,16 @@ class Note:
     def content(self):
         return self.path.read_text()
 
+    @property
+    def html(self):
+        return markdown.markdown("#" + self.content)
+
+
     def build(self):
-        html = markdown.markdown("#" + self.content)
-        self.build_path.write_text(html)
+        template = Template(settings.BUILD_TEMPLATE)
+        #template = Template('<html><header></header><body>{{ content }}</body></html>')
+        html_content = template.render(content=self.html)
+        self.build_path.write_text(html_content)
 
     @property
     def title(self):
