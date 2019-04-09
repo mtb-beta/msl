@@ -76,8 +76,9 @@ class GroupManager:
 
     def add(self, group, note):
         group = self.get(group)
-        group.add(note)
-        group.save()
+        if group:
+            group.add(note)
+            group.save()
 
 group_manager = GroupManager()
 
