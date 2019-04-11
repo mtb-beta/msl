@@ -72,6 +72,10 @@ class Note:
     def cat(self):
         os.system("cat {}".format(self.path))
 
+    def write(self, content):
+        self.path.write_text(content)
+
+
 class NoteManager:
     def find(self, note_name):
         if len(note_name) == 36:
@@ -227,12 +231,11 @@ def import_command(path_str):
         content = note_path.read_text()
 
         # create new file
-        new_note_name = create_note_name()
-        new_note_path = NOTE_DIR / new_note_name
+        new_note = Note()
         # exclude extension from title
         title = note_path.name.split('.')[0]
-        new_note_path.write_text(title + '\n' + content)
-        save_meta_data(new_note_name)
+        new_note.write(title + '\n' + content)
+        new_note.save()
         print(f'create note title {new_note_name}')
 
 
@@ -279,6 +282,25 @@ def cat_command(note_name):
 
     note.cat()
 
+
+def merge_command(merge_note_ids):
+    """
+    This command merge the multi note.
+    """
+    merge_notes = []
+    for note_id in merge_note_ids:
+        note = note_manager.get(note_id)
+        if note:
+            merge_notes.append(note)
+
+    new_content = "\n\n#".join(
+        [ note.content for note in merge_notes]
+    )
+    temporary_note = Note()
+    temporary_note.write(new_content)
+    temporary_note.open()
+    temporary_note.save()
+    print('merged!')
 
 def search_command(keyword):
     for note in note_manager.search(keyword) :
