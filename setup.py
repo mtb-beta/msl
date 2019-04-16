@@ -6,7 +6,7 @@ entry_points = {
 
 setup(
     name='msl',
-    version='0.0.1',
+    version='0.0.2',
     description='My Standard Library',
     author='Tatsuya Matoba',
     author_email='tatsuya.matoa.wk.jp@gmail.com',
