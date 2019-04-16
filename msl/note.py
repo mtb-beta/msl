@@ -39,7 +39,30 @@ class Note:
         os.system("vim {}".format(self.path))
 
     def save(self):
-        save_meta_data(self.note_id)
+        """
+        This will update meta data on note_name.
+        """
+        note_name = self.note_id
+        data = {}
+        data['created_at'] = datetime.now().isoformat(timespec='seconds')
+        note_path = NOTE_DIR / note_name
+
+        if not note_path.exists():
+            logging.warning('There is not note_path.')
+            return
+
+        with note_path.open() as f:
+            data['title'] = f.readline().replace('\n', '')
+
+        data['hostname'] = settings.HOSTNAME
+
+        json_note_path = META_DIR / str(note_name + '.json')
+        with json_note_path.open(mode='w') as json_file:
+            json.dump(data, json_file)
+
+        settings.repo.index.add(['*'])
+        settings.repo.index.commit("save:{}".format(note_name))
+
 
     @classmethod
     def load(clz, note_path):
@@ -64,7 +87,7 @@ class Note:
     @property
     def title(self):
         if not self.meta_path.exists():
-            save_meta_data(self.note_id)
+            self.save()
         with self.meta_path.open() as f:
             meta = json.load(f)
         return meta['title']
@@ -153,30 +176,6 @@ class NoteManager:
 
 note_manager = NoteManager()
 
-
-def save_meta_data(note_name):
-    """
-    This will update meta data on note_name.
-    """
-    data = {}
-    data['created_at'] = datetime.now().isoformat(timespec='seconds')
-    note_path = NOTE_DIR / note_name
-
-    if not note_path.exists():
-        logging.warning('There is not note_path.')
-        return
-
-    with note_path.open() as f:
-        data['title'] = f.readline().replace('\n', '')
-
-    data['hostname'] = settings.HOSTNAME
-
-    json_note_path = META_DIR / str(note_name + '.json')
-    with json_note_path.open(mode='w') as json_file:
-        json.dump(data, json_file)
-
-    settings.repo.index.add(['*'])
-    settings.repo.index.commit("save:{}".format(note_name))
 
 
 def create_note_name():

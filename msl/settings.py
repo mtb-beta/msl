@@ -38,5 +38,6 @@ GROUP_DIR.mkdir(exist_ok=True)
 BUILD_DIR.mkdir(exist_ok=True)
 
 BUILD_TEMPLATE_PATH = Path('./msl/') / 'build_template.html'
-BUILD_TEMPLATE = BUILD_TEMPLATE_PATH.read_text()
+if BUILD_TEMPLATE_PATH.exists():
+    BUILD_TEMPLATE = BUILD_TEMPLATE_PATH.read_text()
 
