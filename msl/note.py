@@ -236,7 +236,7 @@ def import_command(path_str):
         title = note_path.name.split('.')[0]
         new_note.write(title + '\n' + content)
         new_note.save()
-        print(f'create note title {new_note_name}')
+        print(f'create note title {new_note.name}')
 
 
 def grep_command(keyword):
