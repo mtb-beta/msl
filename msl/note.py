@@ -21,7 +21,6 @@ BUILD_DIR = settings.BUILD_DIR
 class Note:
     def __init__(self):
         self.note_id = str(uuid.uuid1())
-        self.created_at = datetime.now().isoformat(timespec='seconds')
 
     @property
     def path(self):
@@ -43,36 +42,37 @@ class Note:
         """
         This will update meta data on note_name.
         """
-        data = {}
-        data['created_at'] = self.create_at
 
         if not self.path.exists():
             logging.warning('There is not note_path.')
             return
 
+        data = {}
         data['title'] = self.title
         data['hostname'] = settings.HOSTNAME
+        data['created_at'] = self.created_at
+        data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
 
         with self.meta_path.open(mode='w') as json_file:
             json.dump(data, json_file)
 
         settings.repo.index.add(['*'])
-        settings.repo.index.commit("save:{}".format(note_name))
-
-    @property
-    def title(self):
-        if not self.path.exists():
-            logging.warning('There is not note_path.')
-            return
-
-        with self.path.open() as f:
-            return f.readline().replace('\n', '')
+        settings.repo.index.commit("save:{}".format(self.note_id))
 
     @classmethod
     def load(clz, note_path):
         note = Note()
         note.note_id = note_path.name
         return note
+
+    @property
+    def meta(self):
+        if not self.meta_path.exists():
+            return {}
+
+        with self.meta_path.open() as f:
+            meta = json.load(f)
+        return meta
 
     @property
     def content(self):
@@ -91,10 +91,22 @@ class Note:
     @property
     def title(self):
         if not self.meta_path.exists():
-            self.save()
-        with self.meta_path.open() as f:
-            meta = json.load(f)
-        return meta['title']
+            with self.path.open() as f:
+                return f.readline().replace('\n', '')
+        print(self.meta)
+        return self.meta['title']
+
+    @property
+    def created_at(self):
+        if not self.meta_path.exists():
+            return datetime.now().isoformat(timespec='seconds')
+        return self.meta['created_at']
+
+    @property
+    def updated_at(self):
+        if not self.meta_path.exists():
+            return self.meta['created_at']
+        return self.meta['updated_at']
 
     def cat(self):
         os.system("cat {}".format(self.path))

@@ -2,5 +2,10 @@ UnRelease
 ================
 
 - create ChangeLogs
-- refactoring msl.note.Note.save()
-- add property msl.note.Note.title
+- refactoring method msl.note.Note.save()
+- refactoring property msl.note.Note.cretead_at
+- refactoring property msl.note.Note.title
+- add property msl.note.Note.meta
+- add property msl.note.Note.updated_at
+- save Note updated time
+
