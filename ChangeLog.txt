@@ -9,4 +9,4 @@ UnRelease
 - add property msl.note.Note.updated_at
 - feature: save Note updated time
 - feature: add --all option to list command
-
+- bugfix: not channged title when update note

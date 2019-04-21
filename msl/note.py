@@ -48,7 +48,6 @@ class Note:
             return
 
         data = {}
-        data['title'] = self.title
         data['hostname'] = settings.HOSTNAME
         data['created_at'] = self.created_at
         data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
@@ -90,10 +89,8 @@ class Note:
 
     @property
     def title(self):
-        if not self.meta_path.exists():
-            with self.path.open() as f:
-                return f.readline().replace('\n', '')
-        return self.meta['title']
+        with self.path.open() as f:
+            return f.readline().replace('\n', '')
 
     @property
     def created_at(self):
