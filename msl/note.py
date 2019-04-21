@@ -49,7 +49,7 @@ class Note:
 
         data = {}
         data['hostname'] = settings.HOSTNAME
-        data['created_at'] = self.created_at
+        data['created_at'] = self.created_at.isoformat(timespec='seconds')
         data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
 
         with self.meta_path.open(mode='w') as json_file:
@@ -95,14 +95,14 @@ class Note:
     @property
     def created_at(self):
         if not self.meta_path.exists():
-            return datetime.now().isoformat(timespec='seconds')
-        return self.meta['created_at']
+            return datetime.now()
+        return datetime.strptime(self.meta['created_at'], "%Y-%m-%dT%H:%M:%S")
 
     @property
     def updated_at(self):
-        if not self.meta_path.exists():
-            return self.meta['created_at']
-        return self.meta['updated_at']
+        if 'updated_at' in self.meta:
+            return datetime.strptime(self.meta['updated_at'], "%Y-%m-%dT%H:%M:%S")
+        return self.created_at
 
     def cat(self):
         os.system("cat {}".format(self.path))
@@ -151,10 +151,14 @@ class NoteManager:
         settings.repo.index.add(['*'])
         settings.repo.index.commit("delete:{}".format(note_name))
 
-    def all(self):
-        notes = list(NOTE_DIR.glob('*'))
-        for note in notes:
-            yield self.get(note.name)
+    def all(self, sort='updated_at'):
+        note_paths = list(NOTE_DIR.glob('*'))
+        for note_path in sorted(
+                note_paths,
+                key=lambda note_path: getattr(self.get(note_path.name), sort),
+                reverse=True
+            ):
+            yield self.get(note_path.name)
 
     def build(self, note_name):
         note = self.get(note_name)
