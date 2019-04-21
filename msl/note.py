@@ -50,18 +50,23 @@ class Note:
             logging.warning('There is not note_path.')
             return
 
-        with self.path.open() as f:
-            data['title'] = f.readline().replace('\n', '')
-
+        data['title'] = self.title
         data['hostname'] = settings.HOSTNAME
 
-        json_note_path = META_DIR / str(note_name + '.json')
-        with json_note_path.open(mode='w') as json_file:
+        with self.meta_path.open(mode='w') as json_file:
             json.dump(data, json_file)
 
         settings.repo.index.add(['*'])
         settings.repo.index.commit("save:{}".format(note_name))
 
+    @property
+    def title(self):
+        if not self.path.exists():
+            logging.warning('There is not note_path.')
+            return
+
+        with self.path.open() as f:
+            return f.readline().replace('\n', '')
 
     @classmethod
     def load(clz, note_path):

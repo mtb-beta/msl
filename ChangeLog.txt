@@ -2,3 +2,5 @@ UnRelease
 ================
 
 - create ChangeLogs
+- refactoring msl.note.save()
+- add property msl.note.title
