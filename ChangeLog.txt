@@ -7,5 +7,6 @@ UnRelease
 - refactoring property msl.note.Note.title
 - add property msl.note.Note.meta
 - add property msl.note.Note.updated_at
-- save Note updated time
+- feature: save Note updated time
+- feature: add --all option to list command
 

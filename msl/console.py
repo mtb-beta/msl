@@ -34,8 +34,14 @@ def main():
 
     elif len(args) > 1 and args[1] == 'list' or args[1] == 'l':
         option = {}
-        if len(args) > 2 and args[2] == "--strict":
+        if len(args) > 2 and "--strict" in args[2:]:
             option['strict'] = True
+
+        if len(args) > 2 and "--all" in args[2:]:
+            option['all'] = False
+        else:
+            option['all'] = True
+
 
         note.list_command(option)
 

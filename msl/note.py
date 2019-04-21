@@ -210,7 +210,10 @@ def list_command(option):
     """
     This command list notes.
     """
-    for note in note_manager.all():
+    for count, note in enumerate(note_manager.all()):
+        if count > 10 and 'all' in option and option['all']:
+            continue
+
         if 'strict' in option and option['strict']:
             print(f'{note.note_id}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
         else:
