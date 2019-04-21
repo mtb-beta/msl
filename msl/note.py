@@ -21,6 +21,7 @@ BUILD_DIR = settings.BUILD_DIR
 class Note:
     def __init__(self):
         self.note_id = str(uuid.uuid1())
+        self.created_at = datetime.now().isoformat(timespec='seconds')
 
     @property
     def path(self):
@@ -42,16 +43,14 @@ class Note:
         """
         This will update meta data on note_name.
         """
-        note_name = self.note_id
         data = {}
-        data['created_at'] = datetime.now().isoformat(timespec='seconds')
-        note_path = NOTE_DIR / note_name
+        data['created_at'] = self.create_at
 
-        if not note_path.exists():
+        if not self.path.exists():
             logging.warning('There is not note_path.')
             return
 
-        with note_path.open() as f:
+        with self.path.open() as f:
             data['title'] = f.readline().replace('\n', '')
 
         data['hostname'] = settings.HOSTNAME
