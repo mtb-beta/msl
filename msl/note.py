@@ -240,11 +240,17 @@ def import_command(path_str):
     if target_path.is_dir():
         notes_path = list(target_path.glob('*'))
     else:
-        notes_path = [target_path]
+        print('please set import path')
+        return
+
+    imported_dir = target_path / 'imported'
+    imported_dir.mkdir(exist_ok=True)
 
     for note_path in notes_path:
         # load content
         if note_path.name == ".DS_Store":
+            continue
+        if note_path.is_dir():
             continue
         content = note_path.read_text()
 
@@ -254,7 +260,8 @@ def import_command(path_str):
         title = note_path.name.split('.')[0]
         new_note.write(title + '\n' + content)
         new_note.save()
-        print(f'create note title {new_note_name}')
+        print(f'create note title {new_note.title}')
+        note_path.replace(imported_dir / note_path.name )
 
 
 def grep_command(keyword):
