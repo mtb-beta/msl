@@ -63,6 +63,9 @@ def main():
     elif len(args) > 2 and args[1] == 'merge':
         note.merge_command(args[2:])
 
+    elif len(args) > 2 and args[1] == 'random' or args[1] == 'rand':
+        note.random_command()
+
     elif len(args) > 2 and args[1] == 'cat':
         note.cat_command(args[2])
 

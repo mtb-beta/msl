@@ -1,6 +1,8 @@
 UnRelease
 ================
 
+- feature: create random command
+
 0.1.0(2019/4/22)
 ====================
 

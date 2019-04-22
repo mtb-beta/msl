@@ -2,6 +2,7 @@ import os
 import uuid
 import logging
 import json
+import random
 from pathlib import Path
 from datetime import datetime
 
@@ -106,6 +107,7 @@ class Note:
 
     def cat(self):
         os.system("cat {}".format(self.path))
+        print('')
 
     def write(self, content):
         self.path.write_text(content)
@@ -330,3 +332,9 @@ def merge_command(merge_note_ids):
 def search_command(keyword):
     for note in note_manager.search(keyword) :
         print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+
+def random_command():
+    notes = note_manager.all()
+    note = random.choice(list(notes))
+    print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+    note.cat()
