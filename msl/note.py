@@ -333,8 +333,13 @@ def search_command(keyword):
     for note in note_manager.search(keyword) :
         print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
 
-def random_command():
-    notes = note_manager.all()
-    note = random.choice(list(notes))
-    print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
-    note.cat()
+def random_command(option):
+    notes = list(note_manager.all())
+    if 'list' in option and option['list']:
+        for _ in range(10):
+            note = random.choice(notes)
+            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+    else:
+        note = random.choice(notes)
+        print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+        note.cat()

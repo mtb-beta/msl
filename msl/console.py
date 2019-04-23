@@ -64,7 +64,11 @@ def main():
         note.merge_command(args[2:])
 
     elif len(args) > 2 and args[1] == 'random' or args[1] == 'rand':
-        note.random_command()
+        option = {}
+        if len(args) > 2 and "--list" in args[2:]:
+            option['list'] = True
+
+        note.random_command(option)
 
     elif len(args) > 2 and args[1] == 'cat':
         note.cat_command(args[2])

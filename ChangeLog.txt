@@ -2,6 +2,7 @@ UnRelease
 ================
 
 - feature: create random command
+- feature: add --list option to random command
 
 0.1.0(2019/4/22)
 ====================
