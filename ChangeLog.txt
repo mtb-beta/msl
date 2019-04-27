@@ -2,6 +2,7 @@ UnRelease
 ================
 
 - feature: search by double keyword
+- feature: add archive command
 
 0.2.0(2019/4/23)
 ====================

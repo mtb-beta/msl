@@ -17,6 +17,7 @@ BASE_DIR = settings.BASE_DIR
 META_DIR = settings.META_DIR
 NOTE_DIR = settings.NOTE_DIR
 BUILD_DIR = settings.BUILD_DIR
+ARCHIVE_DIR = settings.ARCHIVE_DIR
 
 
 class Note:
@@ -153,6 +154,17 @@ class NoteManager:
         settings.repo.index.add(['*'])
         settings.repo.index.commit("delete:{}".format(note_name))
 
+    def archive(self, note_name):
+        notes = self.find(note_name)
+
+        if len(notes) != 1:
+            print(f'{note_name} can not find.')
+            return
+        os.replace(notes[0].path, ARCHIVE_DIR/ notes[0].note_id)
+        settings.repo.index.remove(['*'])
+        settings.repo.index.add(['*'])
+        settings.repo.index.commit("archive:{}".format(note_name))
+
     def all(self, sort='updated_at'):
         note_paths = list(NOTE_DIR.glob('*'))
         for note_path in sorted(
@@ -193,11 +205,6 @@ class NoteManager:
         return result
 
 note_manager = NoteManager()
-
-
-
-def create_note_name():
-    return str(uuid.uuid1())
 
 
 def create_command():
@@ -346,3 +353,10 @@ def random_command(option):
         note = random.choice(notes)
         print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
         note.cat()
+
+def archive_command(note_name):
+    """
+    This command archive note.
+    """
+    note_manager.archive(note_name)
+    print(f'{note_name} archived.')
