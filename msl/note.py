@@ -267,7 +267,7 @@ def import_command(path_str):
         new_note = Note()
         # exclude extension from title
         title = note_path.name.split('.')[0]
-        new_note.write(title + '\n' + content)
+        new_note.write(title + '\n\n' + content)
         new_note.save()
         print(f'create note title {new_note.title}')
         note_path.replace(imported_dir / note_path.name )

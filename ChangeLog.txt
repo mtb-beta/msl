@@ -3,6 +3,7 @@ UnRelease
 
 - feature: search by double keyword
 - feature: add archive command
+- change: add line on import command
 
 0.2.0(2019/4/23)
 ====================
