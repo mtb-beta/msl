@@ -1,6 +1,8 @@
 UnRelease
 ================
 
+- feature: search by double keyword
+
 0.2.0(2019/4/23)
 ====================
 

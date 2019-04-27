@@ -52,7 +52,7 @@ def main():
         note.grep_command(args[2])
 
     elif len(args) > 2 and args[1] == 'search' or args[1] == 's':
-        note.search_command(args[2])
+        note.search_command(args[2:])
 
     elif len(args) > 2 and args[1] == 'delete':
         note.delete_command(args[2])
