@@ -1,0 +1,23 @@
+UnRelease
+================
+
+0.2.0(2019/4/23)
+====================
+
+- feature: create random command
+- feature: add --list option to random command
+
+0.1.0(2019/4/22)
+====================
+
+- create ChangeLogs
+- refactoring method msl.note.Note.save()
+- refactoring property msl.note.Note.cretead_at
+- refactoring property msl.note.Note.title
+- add property msl.note.Note.meta
+- add property msl.note.Note.updated_at
+- feature: save Note updated time
+- feature: add --all option to list command
+- bugfix: not channged title when update note
+- feature: sort items to display by list command
+- feature: auto move file after import command

@@ -2,6 +2,7 @@ import os
 import uuid
 import logging
 import json
+import random
 from pathlib import Path
 from datetime import datetime
 
@@ -42,33 +43,36 @@ class Note:
         """
         This will update meta data on note_name.
         """
-        note_name = self.note_id
-        data = {}
-        data['created_at'] = datetime.now().isoformat(timespec='seconds')
-        note_path = NOTE_DIR / note_name
 
-        if not note_path.exists():
+        if not self.path.exists():
             logging.warning('There is not note_path.')
             return
 
-        with note_path.open() as f:
-            data['title'] = f.readline().replace('\n', '')
-
+        data = {}
         data['hostname'] = settings.HOSTNAME
+        data['created_at'] = self.created_at.isoformat(timespec='seconds')
+        data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
 
-        json_note_path = META_DIR / str(note_name + '.json')
-        with json_note_path.open(mode='w') as json_file:
+        with self.meta_path.open(mode='w') as json_file:
             json.dump(data, json_file)
 
         settings.repo.index.add(['*'])
-        settings.repo.index.commit("save:{}".format(note_name))
-
+        settings.repo.index.commit("save:{}".format(self.note_id))
 
     @classmethod
     def load(clz, note_path):
         note = Note()
         note.note_id = note_path.name
         return note
+
+    @property
+    def meta(self):
+        if not self.meta_path.exists():
+            return {}
+
+        with self.meta_path.open() as f:
+            meta = json.load(f)
+        return meta
 
     @property
     def content(self):
@@ -86,14 +90,24 @@ class Note:
 
     @property
     def title(self):
+        with self.path.open() as f:
+            return f.readline().replace('\n', '')
+
+    @property
+    def created_at(self):
         if not self.meta_path.exists():
-            self.save()
-        with self.meta_path.open() as f:
-            meta = json.load(f)
-        return meta['title']
+            return datetime.now()
+        return datetime.strptime(self.meta['created_at'], "%Y-%m-%dT%H:%M:%S")
+
+    @property
+    def updated_at(self):
+        if 'updated_at' in self.meta:
+            return datetime.strptime(self.meta['updated_at'], "%Y-%m-%dT%H:%M:%S")
+        return self.created_at
 
     def cat(self):
         os.system("cat {}".format(self.path))
+        print('')
 
     def write(self, content):
         self.path.write_text(content)
@@ -139,10 +153,14 @@ class NoteManager:
         settings.repo.index.add(['*'])
         settings.repo.index.commit("delete:{}".format(note_name))
 
-    def all(self):
-        notes = list(NOTE_DIR.glob('*'))
-        for note in notes:
-            yield self.get(note.name)
+    def all(self, sort='updated_at'):
+        note_paths = list(NOTE_DIR.glob('*'))
+        for note_path in sorted(
+                note_paths,
+                key=lambda note_path: getattr(self.get(note_path.name), sort),
+                reverse=True
+            ):
+            yield self.get(note_path.name)
 
     def build(self, note_name):
         note = self.get(note_name)
@@ -195,7 +213,10 @@ def list_command(option):
     """
     This command list notes.
     """
-    for note in note_manager.all():
+    for count, note in enumerate(note_manager.all()):
+        if count > 10 and 'all' in option and option['all']:
+            continue
+
         if 'strict' in option and option['strict']:
             print(f'{note.note_id}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
         else:
@@ -221,11 +242,17 @@ def import_command(path_str):
     if target_path.is_dir():
         notes_path = list(target_path.glob('*'))
     else:
-        notes_path = [target_path]
+        print('please set import path')
+        return
+
+    imported_dir = target_path / 'imported'
+    imported_dir.mkdir(exist_ok=True)
 
     for note_path in notes_path:
         # load content
         if note_path.name == ".DS_Store":
+            continue
+        if note_path.is_dir():
             continue
         content = note_path.read_text()
 
@@ -235,7 +262,8 @@ def import_command(path_str):
         title = note_path.name.split('.')[0]
         new_note.write(title + '\n' + content)
         new_note.save()
-        print(f'create note title {new_note.name}')
+        print(f'create note title {new_note.title}')
+        note_path.replace(imported_dir / note_path.name )
 
 
 def grep_command(keyword):
@@ -304,3 +332,14 @@ def merge_command(merge_note_ids):
 def search_command(keyword):
     for note in note_manager.search(keyword) :
         print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+
+def random_command(option):
+    notes = list(note_manager.all())
+    if 'list' in option and option['list']:
+        for _ in range(10):
+            note = random.choice(notes)
+            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+    else:
+        note = random.choice(notes)
+        print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+        note.cat()
