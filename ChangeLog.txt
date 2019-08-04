@@ -1,6 +1,9 @@
 UnRelease
 ================
 
+0.3.0(2019/8/4)
+====================
+
 - feature: search by double keyword
 - feature: add archive command
 - change: add line on import command
