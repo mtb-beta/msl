@@ -57,8 +57,6 @@ class Note:
         with self.meta_path.open(mode='w') as json_file:
             json.dump(data, json_file)
 
-        settings.repo.index.add(['*'])
-        settings.repo.index.commit("save:{}".format(self.note_id))
 
     @classmethod
     def load(clz, note_path):
@@ -150,9 +148,6 @@ class NoteManager:
             return
 
         os.remove(notes[0].path)
-        settings.repo.index.remove(['*'])
-        settings.repo.index.add(['*'])
-        settings.repo.index.commit("delete:{}".format(note_name))
 
     def archive(self, note_name):
         notes = self.find(note_name)
@@ -161,9 +156,6 @@ class NoteManager:
             print(f'{note_name} can not find.')
             return
         os.replace(notes[0].path, ARCHIVE_DIR/ notes[0].note_id)
-        settings.repo.index.remove(['*'])
-        settings.repo.index.add(['*'])
-        settings.repo.index.commit("archive:{}".format(note_name))
 
     def all(self, sort='updated_at'):
         note_paths = list(NOTE_DIR.glob('*'))
