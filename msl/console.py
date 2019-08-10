@@ -67,7 +67,24 @@ def main():
         note.grep_command(args[2])
 
     elif len(args) > 2 and args[1] == 'search' or args[1] == 's':
-        note.search_command(args[2:])
+        option = {}
+        if len(args) > 2 and ("--open" in args[2:] or "o" in args[2:]):
+            open_note = 1
+            if "--open" in args[2:]:
+                open_index = args.index("--open")
+            elif "o" in args[2:]:
+                open_index = args.index("o")
+
+            if (len(args) > 3
+                    and open_index
+                    and args[open_index +1].isdigit()):
+                open_note = int(args[open_index +1])
+            option['open'] = open_note
+            option['keywords'] = args[2:open_index]
+        else:
+            option['keywords'] = args[2:]
+
+        note.search_command(option)
 
     elif len(args) > 2 and args[1] == 'delete':
         note.delete_command(args[2])

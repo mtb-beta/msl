@@ -342,12 +342,22 @@ def merge_command(merge_note_ids):
     temporary_note.save()
     print('merged!')
 
-def search_command(keywords):
-    for note in note_manager.search(keywords[0]) :
-        if len(keywords) < 2:
-            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
-        elif keywords[1] and keywords[1] in note.content:
-            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+def search_command(option):
+    keywords = option['keywords']
+
+    for count, note in enumerate(note_manager.search(keywords[0])):
+        
+        if 'open' in option:
+            if option['open'] == (count+1):
+                note.open()
+                note.save()
+                break
+        else:
+            # open オプションが指定されているときは表示されない
+            if len(keywords) < 2:
+                print(f'{count+1}: {note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+            elif keywords[1] and keywords[1] in note.content:
+                print(f'{count+1}: {note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
 
 def random_command(option):
     notes = list(note_manager.all())
