@@ -32,6 +32,9 @@ def main():
     if len(args) == 1 or args[1] == 'create':
         note.create_command()
 
+    elif len(args) > 1 and args[1] == 're':
+        note.re_command()
+
     elif len(args) > 1 and args[1] == 'list' or args[1] == 'l':
         option = {}
         if len(args) > 2 and "--strict" in args[2:]:

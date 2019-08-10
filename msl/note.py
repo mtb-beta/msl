@@ -208,6 +208,14 @@ def create_command():
     temporary_note.save()
 
 
+def re_command():
+    """
+    This command open letest note.
+    """
+    note = next(note_manager.all())
+    note.open()
+    note.save()
+
 def list_command(option):
     """
     This command list notes.
