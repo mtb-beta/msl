@@ -222,12 +222,18 @@ def list_command(option):
     """
     for count, note in enumerate(note_manager.all()):
         if count > 10 and 'all' in option and option['all']:
-            continue
+            break
 
-        if 'strict' in option and option['strict']:
-            print(f'{note.note_id}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+        if 'open' in option:
+            if option['open'] == (count+1):
+                note.open()
+                note.save()
+                break
         else:
-            print(f'{note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+            if 'strict' in option and option['strict']:
+                print(f'{count+1}: {note.note_id}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
+            else:
+                print(f'{count+1}: {note.note_id[:8]}{Fore.GREEN}:{Style.RESET_ALL}{note.title}')
 
 
 def edit_command(note_name):

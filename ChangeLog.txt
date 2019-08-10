@@ -2,6 +2,7 @@ UnRelease
 ================
 
 - feature: add re command
+- feature: add --open option to list command
 
 0.3.0(2019/8/4)
 ====================
