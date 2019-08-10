@@ -1,6 +1,9 @@
 UnRelease
 ================
 
+0.4.0(2019/8/11)
+====================
+
 - feature: add re command
 - feature: add --open option to list command
 - feature: add --open option to search command
