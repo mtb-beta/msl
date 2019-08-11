@@ -45,14 +45,23 @@ class Note:
         This will update meta data on note_name.
         """
 
+        # ファイルがないなら何もしない
         if not self.path.exists():
             logging.warning('There is not note_path.')
             return
 
         data = {}
+
         data['hostname'] = settings.HOSTNAME
         data['created_at'] = self.created_at.isoformat(timespec='seconds')
-        data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
+
+        # ファイルのサイズが変わってないなら更新日時を変えない
+        new_size = os.path.getsize(self.path)
+        if self.file_size and self.file_size == new_size:
+            data['updated_at'] =  self.updated_at.isoformat(timespec='seconds')
+        else:
+            data['updated_at'] =  datetime.now().isoformat(timespec='seconds')
+        data['file_size'] = new_size
 
         with self.meta_path.open(mode='w') as json_file:
             json.dump(data, json_file)
@@ -103,6 +112,11 @@ class Note:
         if 'updated_at' in self.meta:
             return datetime.strptime(self.meta['updated_at'], "%Y-%m-%dT%H:%M:%S")
         return self.created_at
+
+    @property
+    def file_size(self):
+        if 'file_size' in self.meta:
+            return self.meta['file_size']
 
     def cat(self):
         os.system("cat {}".format(self.path))

@@ -1,6 +1,8 @@
 UnRelease
 ================
 
+- change: don't update meta date by to open with no edit
+
 0.4.0(2019/8/11)
 ====================
 
