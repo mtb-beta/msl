@@ -171,12 +171,12 @@ class NoteManager:
             return
         os.replace(notes[0].path, ARCHIVE_DIR/ notes[0].note_id)
 
-    def all(self, sort='updated_at'):
+    def all(self, reverse=True, sort='updated_at'):
         note_paths = list(NOTE_DIR.glob('*'))
         for note_path in sorted(
                 note_paths,
                 key=lambda note_path: getattr(self.get(note_path.name), sort),
-                reverse=True
+                reverse=reverse
             ):
             yield self.get(note_path.name)
 
@@ -390,3 +390,11 @@ def archive_command(note_name):
     """
     note_manager.archive(note_name)
     print(f'{note_name} archived.')
+
+def refresh_command():
+    """
+    This command refresh all notes meta.
+    """
+    notes = note_manager.all()
+    for note in notes:
+        note.save()
